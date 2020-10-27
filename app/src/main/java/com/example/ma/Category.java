@@ -93,7 +93,7 @@ public class Category extends AppCompatActivity {
                     textView.setText("식당");
                     btn.setText("식당1");
 
-                    String url = "http://pudingles1114.iptime.org:23000/place/get_restau_info";
+                    String url = "http://pudingles1114.iptime.org:23000/places/get_restau_info";
                     NetworkTask networkTask = new NetworkTask(url, null);
                     networkTask.execute();
 
@@ -186,7 +186,7 @@ public class Category extends AppCompatActivity {
             JSONObject wrapObject = new JSONObject(dataObject);
 
             // JSONObject 의 키 "list" 의 값들을 JSONArray 형태로 변환
-            JSONArray jsonArray = new JSONArray(wrapObject.getString("place"));
+            JSONArray jsonArray = new JSONArray(wrapObject.getString("places"));
             for(int i = 0; i < jsonArray.length(); i++){
                 // Array 에서 하나의 JSONObject 를 추출
                 JSONObject dataJsonObject = jsonArray.getJSONObject(i);
@@ -195,7 +195,7 @@ public class Category extends AppCompatActivity {
                 mItems.add(new Places(dataJsonObject.getString("id"),dataJsonObject.getString("placeid"),
                         dataJsonObject.getString("placename"),dataJsonObject.getString("category"),
                         dataJsonObject.getString("like"),dataJsonObject.getString("dislike"),
-                        dataJsonObject.getString("recomrate")));
+                        dataJsonObject.getString("recomrate"),dataJsonObject.getString("address")));
             }
             // Recycler Adapter 에서 데이터 변경 사항을 체크하라는 함수 호출
             adapter.notifyDataSetChanged();
