@@ -84,8 +84,10 @@ public class Category extends AppCompatActivity {
     public void selectCategory(Intent intent){
         if(intent != null){
             Bundle bundle = intent.getExtras();
-
+            String url;
+            NetworkTask networkTask;
             int category = bundle.getInt("data");
+
 
             switch (category)
             {
@@ -93,8 +95,8 @@ public class Category extends AppCompatActivity {
                     textView.setText("식당");
                     btn.setText("식당1");
 
-                    String url = "http://pudingles1114.iptime.org:23000/places/get_restau_info";
-                    NetworkTask networkTask = new NetworkTask(url, null);
+                    url = "http://pudingles1114.iptime.org:23000/places/get_restau_info";
+                    networkTask = new NetworkTask(url, null);
                     networkTask.execute();
 
                     for(int i=0; i< mItems.size(); i++) {
@@ -107,16 +109,46 @@ public class Category extends AppCompatActivity {
                 case FUN:
                     textView.setText("꿀잼장소");;
                     btn.setText("꿀잼장소1");
+
+                    url = "http://pudingles1114.iptime.org:23000/places/get_fun_info";
+                    networkTask = new NetworkTask(url, null);
+                    networkTask.execute();
+
+                    for(int i=0; i< mItems.size(); i++) {
+                        buttons.add(new Button(this));
+                        buttons.get(i).setText(mItems.get(i).get_placename());
+                        linear.addView(buttons.get(i));
+                    }
                     selectPlace(category);
                     break;
                 case PUB:
                     textView.setText("술집");;
                     btn.setText("술집1");
+
+                    url = "http://pudingles1114.iptime.org:23000/places/get_pub_info";
+                    networkTask = new NetworkTask(url, null);
+                    networkTask.execute();
+
+                    for(int i=0; i< mItems.size(); i++) {
+                        buttons.add(new Button(this));
+                        buttons.get(i).setText(mItems.get(i).get_placename());
+                        linear.addView(buttons.get(i));
+                    }
                     selectPlace(category);
                     break;
                 case ETC:
                     textView.setText("기타");;
                     btn.setText("기타1");
+
+                    url = "http://pudingles1114.iptime.org:23000/places/get_etc_info";
+                    networkTask = new NetworkTask(url, null);
+                    networkTask.execute();
+
+                    for(int i=0; i< mItems.size(); i++) {
+                        buttons.add(new Button(this));
+                        buttons.get(i).setText(mItems.get(i).get_placename());
+                        linear.addView(buttons.get(i));
+                    }
                     selectPlace(category);
                     break;
 
