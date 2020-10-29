@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -23,11 +24,15 @@ public class Place extends AppCompatActivity {
     public static final int PUB = 103;
     public static final int ETC = 104;
 
+    int placeid;
+
     TextView textView;
     TextView textView2;
     TextView textView3;
     TextView textView4;
     ArrayList<Places> mItems = new ArrayList<Places>();
+    Button like_btn;
+    Button dislike_btn;
     ImageButton btn;
     String address;
     String url;
@@ -43,6 +48,28 @@ public class Place extends AppCompatActivity {
         textView3 = findViewById(R.id.recomReason);
         textView4 = findViewById(R.id.phoneCall);
 
+        like_btn = findViewById(R.id.like_btn);
+        like_btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public  void  onClick(View v)
+            {
+                url = "http://pudingles1114.iptime.org:23000/places/like/"+ placeid +"/"+ mItems.get(0).get_like() + "/" + mItems.get(0).get_dislike();
+                networkTask = new NetworkTask(url, null);
+                networkTask.execute();
+                callNetworkTask();
+            }
+        });
+        dislike_btn = findViewById(R.id.dislike_btn);
+        dislike_btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public  void  onClick(View v)
+            {
+                url = "http://pudingles1114.iptime.org:23000/places/dislike/"+ placeid+"/"+ mItems.get(0).get_like() + "/" + mItems.get(0).get_dislike();
+                networkTask = new NetworkTask(url, null);
+                networkTask.execute();
+                callNetworkTask();
+            }
+        });
 
         btn = findViewById(R.id.imageButton);
         btn.setOnClickListener(new View.OnClickListener(){
@@ -69,15 +96,20 @@ public class Place extends AppCompatActivity {
         if(intent != null){
             Bundle bundle = intent.getExtras();
 
-            int id = bundle.getInt("data");
+            placeid = bundle.getInt("data");
             int num = bundle.getInt("name");
 
-            url = "http://pudingles1114.iptime.org:23000/places/get_place/"+ Integer.toString(id);
-            networkTask = new NetworkTask(url, null);
-            networkTask.execute();
+            callNetworkTask();
 
         }
     }
+
+    public void callNetworkTask(){
+        url = "http://pudingles1114.iptime.org:23000/places/get_place/"+ placeid;
+        networkTask = new NetworkTask(url, null);
+        networkTask.execute();
+    }
+
 
     public class NetworkTask extends AsyncTask<String, Void, String> {
 
@@ -111,15 +143,19 @@ public class Place extends AppCompatActivity {
             super.onPostExecute(s);
 
             //doInBackground()로 부터 리턴된 값이 onPostExecute()의 매개변수로 넘어오므로 s를 출력한다.
-            receiveArray(s);
+            loadUI(s);
+        }
+    }
 
-            if(mItems.isEmpty() != true) {
-                textView.setText(mItems.get(0).get_placename());
-                textView2.setText("좋아요 : " + mItems.get(0).get_like() + " 싫어요 : " + mItems.get(0).get_dislike());
-                textView3.setText("선호 비율 :" + mItems.get(0).get_recomrate()+"%");
-                textView4.setText(mItems.get(0).get_phoneNum());
-                address = mItems.get(0).get_address();
-            }
+    public void loadUI(String s){
+        receiveArray(s);
+
+        if(mItems.isEmpty() != true) {
+            textView.setText(mItems.get(0).get_placename());
+            textView2.setText("좋아요 : " + mItems.get(0).get_like() + " 싫어요 : " + mItems.get(0).get_dislike());
+            textView3.setText("선호 비율 :" + mItems.get(0).get_recomrate()+"%");
+            textView4.setText(mItems.get(0).get_phoneNum());
+            address = mItems.get(0).get_address();
         }
     }
 
