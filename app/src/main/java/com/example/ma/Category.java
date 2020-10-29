@@ -104,7 +104,6 @@ public class Category extends AppCompatActivity {
                         buttons.get(i).setText(mItems.get(i).get_placename());
                         linear.addView(buttons.get(i));
                     }
-                    selectPlace(category);
                     break;
                 case FUN:
                     textView.setText("꿀잼장소");;
@@ -119,7 +118,6 @@ public class Category extends AppCompatActivity {
                         buttons.get(i).setText(mItems.get(i).get_placename());
                         linear.addView(buttons.get(i));
                     }
-                    selectPlace(category);
                     break;
                 case PUB:
                     textView.setText("술집");;
@@ -134,7 +132,6 @@ public class Category extends AppCompatActivity {
                         buttons.get(i).setText(mItems.get(i).get_placename());
                         linear.addView(buttons.get(i));
                     }
-                    selectPlace(category);
                     break;
                 case ETC:
                     textView.setText("기타");;
@@ -149,29 +146,11 @@ public class Category extends AppCompatActivity {
                         buttons.get(i).setText(mItems.get(i).get_placename());
                         linear.addView(buttons.get(i));
                     }
-                    selectPlace(category);
                     break;
 
 
             }
         }
-    }
-
-    public void selectPlace(int category){
-        final int CATEGORIES = category;
-
-        Button btn = findViewById(R.id.button);
-        btn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public  void  onClick(View v)
-            {
-                Intent intent = new Intent(getApplicationContext(), Place.class);
-                intent.putExtra("data", CATEGORIES);
-                intent.putExtra("name", 1);
-                startActivityForResult(intent, CATEGORIES);
-
-            }
-        });
     }
 
     public class NetworkTask extends AsyncTask<String, Void, String> {
@@ -272,7 +251,19 @@ public class Category extends AppCompatActivity {
         public void onBindViewHolder(ItemViewHolder holder, int position) {
             // - get element from your dataset at this position
             // - replace the contents of the view with that element
-            holder.button.setText(mList.get(position).get_placename());
+            final int POS = position;
+            holder.button.setText(mList.get(POS).get_placename());
+            holder.button.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public  void  onClick(View v)
+                {
+                    Intent intent = new Intent(getApplicationContext(), Place.class);
+                    intent.putExtra("data", mList.get(POS).get_id());
+                    intent.putExtra("name", 1);
+                    startActivityForResult(intent, mList.get(POS).get_id());
+
+                }
+            });
 
         }
 

@@ -1,13 +1,21 @@
 package com.example.ma;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class Place extends AppCompatActivity {
     public static final int RES = 101;
@@ -19,8 +27,12 @@ public class Place extends AppCompatActivity {
     TextView textView2;
     TextView textView3;
     TextView textView4;
+    ArrayList<Places> mItems = new ArrayList<Places>();
     ImageButton btn;
     String address;
+    String url;
+    NetworkTask networkTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,38 +72,88 @@ public class Place extends AppCompatActivity {
         if(intent != null){
             Bundle bundle = intent.getExtras();
 
-            int category = bundle.getInt("data");
+            int id = bundle.getInt("data");
             int num = bundle.getInt("name");
-            switch (category)
-            {
-                case RES:
-                    textView.setText("식당" + num);
-                    textView2.setText("054-1234-567");
-                    textView3.setText("맛있습니다!!");
-                    address="선산김치곱창";
-                    break;
-                case FUN:
-                    textView.setText("꿀잼장소" + num);
-                    textView2.setText("053-1234-567");
-                    textView3.setText("너무 놀기 좋습니다!!");
-                    address="상주월드컵볼링장";
-                    break;
-                case PUB:
-                    textView.setText("술집" + num);
-                    textView2.setText("052-1234-567");
-                    textView3.setText("맥주가 굉장히 시원합니다!!");
-                    address="삼백호프";
-                    break;
-                case ETC:
-                    textView.setText("기타" + num);
-                    textView2.setText("051-1234-567");
-                    textView3.setText("데이트 코스로 추천합니다!!");
-                    address="상주공간";
-                    break;
 
+            url = "http://pudingles1114.iptime.org:23000/places/get_place/"+ Integer.toString(id);
+            networkTask = new NetworkTask(url, null);
+            networkTask.execute();
 
+        }
+    }
+
+    public class NetworkTask extends AsyncTask<String, Void, String> {
+
+        private String url;
+        private ContentValues values;
+
+        public NetworkTask(String url, ContentValues values) {
+
+            this.url = url;
+            this.values = values;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //progress bar를 보여주는 등등의 행위
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String result; // 요청 결과를 저장할 변수.
+            RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
+            result = requestHttpURLConnection.request(url, values); // 해당 URL로 부터 결과물을 얻어온다.
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            //doInBackground()로 부터 리턴된 값이 onPostExecute()의 매개변수로 넘어오므로 s를 출력한다.
+            receiveArray(s);
+
+            if(mItems.isEmpty() != true) {
+                textView.setText(mItems.get(0).get_placename());
+                textView2.setText("좋아요 : " + mItems.get(0).get_like() + " 싫어요 : " + mItems.get(0).get_dislike());
+                textView3.setText("선호 비율 :" + mItems.get(0).get_recomrate());
+                address = mItems.get(0).get_address();
             }
         }
+    }
+
+    private void receiveArray(String dataObject){
+        mItems.clear();
+        try {
+            // String 으로 들어온 값 JSONObject 로 1차 파싱
+            JSONObject wrapObject = new JSONObject(dataObject);
+            JSONObject jsonObject = new JSONObject(wrapObject.getString("places"));
+
+            mItems.add(new Places(jsonObject.getString("id"),jsonObject.getString("placeid"),
+                    jsonObject.getString("placename"),jsonObject.getString("category"),
+                    jsonObject.getString("like"),jsonObject.getString("dislike"),
+                    jsonObject.getString("recomrate"),jsonObject.getString("address")));
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            Intent intent = new Intent();
+            setResult(RESULT_OK, intent);
+            finish();
+
+            return true;
+        }
+
+        return false;
     }
 
 }

@@ -21,7 +21,19 @@ public class Places {
         this.address = address;
     }
 
+    int get_id(){ return id; }
     String get_placename(){
         return placename;
     }
+    int get_like(){
+        return like;
+    }
+    int get_dislike(){
+        return dislike;
+    }
+    double get_recomrate(){ return recomrate; }
+    String get_address(){
+        return address;
+    }
+
 }
