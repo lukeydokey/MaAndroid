@@ -24,6 +24,7 @@ public class Places {
     }
 
     int get_id(){ return id; }
+    int get_placeid(){ return placeid; }
     String get_placename(){
         return placename;
     }

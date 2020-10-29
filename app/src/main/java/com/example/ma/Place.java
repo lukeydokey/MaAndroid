@@ -25,19 +25,21 @@ public class Place extends AppCompatActivity {
     public static final int ETC = 104;
 
     int placeid;
+    String uuid;
 
     TextView textView;
     TextView textView2;
     TextView textView3;
     TextView textView4;
     ArrayList<Places> mItems = new ArrayList<Places>();
+    ArrayList<Preference> mPrefer = new ArrayList<Preference>();
     Button like_btn;
     Button dislike_btn;
     ImageButton btn;
     String address;
     String url;
     NetworkTask networkTask;
-
+    NetworkTaskPrefer networkTaskPrefer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +58,12 @@ public class Place extends AppCompatActivity {
                 url = "http://pudingles1114.iptime.org:23000/places/like/"+ placeid +"/"+ mItems.get(0).get_like() + "/" + mItems.get(0).get_dislike();
                 networkTask = new NetworkTask(url, null);
                 networkTask.execute();
+
+                url = "http://pudingles1114.iptime.org:23000/prefer/update/"+ uuid +"/"+ placeid +"/"+ 1 + "/" + 0;
+                networkTask = new NetworkTask(url, null);
+                networkTask.execute();
+                like_btn.setEnabled(false);
+                dislike_btn.setEnabled(false);
                 callNetworkTask();
             }
         });
@@ -67,6 +75,12 @@ public class Place extends AppCompatActivity {
                 url = "http://pudingles1114.iptime.org:23000/places/dislike/"+ placeid+"/"+ mItems.get(0).get_like() + "/" + mItems.get(0).get_dislike();
                 networkTask = new NetworkTask(url, null);
                 networkTask.execute();
+
+                url = "http://pudingles1114.iptime.org:23000/prefer/update/"+ uuid +"/"+ placeid +"/"+ 0 + "/" + 1;
+                networkTask = new NetworkTask(url, null);
+                networkTask.execute();
+                like_btn.setEnabled(false);
+                dislike_btn.setEnabled(false);
                 callNetworkTask();
             }
         });
@@ -97,9 +111,14 @@ public class Place extends AppCompatActivity {
             Bundle bundle = intent.getExtras();
 
             placeid = bundle.getInt("data");
-            int num = bundle.getInt("name");
+            uuid = bundle.getString("uuid");
 
+
+            url = "http://pudingles1114.iptime.org:23000/prefer/get_prefer_info"+"/" + uuid+"/"+ placeid;
+            networkTaskPrefer = new NetworkTaskPrefer(url, null);
+            networkTaskPrefer.execute();
             callNetworkTask();
+
 
         }
     }
@@ -157,6 +176,12 @@ public class Place extends AppCompatActivity {
             textView4.setText(mItems.get(0).get_phoneNum());
             address = mItems.get(0).get_address();
         }
+        if(mPrefer.isEmpty() != true){
+            if(mPrefer.get(0).get_liked()!=false || mPrefer.get(0).get_disliked()!=false){
+                like_btn.setEnabled(false);
+                dislike_btn.setEnabled(false);
+            }
+        }
     }
 
     private void receiveArray(String dataObject){
@@ -175,6 +200,59 @@ public class Place extends AppCompatActivity {
 
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void receivePreference(String dataObject){
+        mPrefer.clear();
+        try {
+            // String 으로 들어온 값 JSONObject 로 1차 파싱
+            JSONObject wrapObject = new JSONObject(dataObject);
+            JSONObject jsonObject = new JSONObject(wrapObject.getString("prefer"));
+
+            mPrefer.add(new Preference(jsonObject.getString("userid"),jsonObject.getString("placeid"),
+                    jsonObject.getString("liked"),jsonObject.getString("disliked"),
+                    jsonObject.getString("sex"),jsonObject.getString("age")));
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public class NetworkTaskPrefer extends AsyncTask<String, Void, String> {
+
+        private String url;
+        private ContentValues values;
+
+        public NetworkTaskPrefer(String url, ContentValues values) {
+
+            this.url = url;
+            this.values = values;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            //progress bar를 보여주는 등등의 행위
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String result; // 요청 결과를 저장할 변수.
+            RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
+            result = requestHttpURLConnection.request(url, values); // 해당 URL로 부터 결과물을 얻어온다.
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            //doInBackground()로 부터 리턴된 값이 onPostExecute()의 매개변수로 넘어오므로 s를 출력한다.
+            receivePreference(s);
         }
     }
 

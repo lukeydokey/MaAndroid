@@ -37,7 +37,7 @@ public class Category extends AppCompatActivity {
     RecyclerView.Adapter adapter;
     RecyclerView.LayoutManager layoutManager;
     RecyclerView recyclerView;
-
+    String android_id;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -81,7 +81,7 @@ public class Category extends AppCompatActivity {
             String url;
             NetworkTask networkTask;
             int category = bundle.getInt("data");
-
+            android_id = bundle.getString("uuid");
 
             switch (category)
             {
@@ -244,9 +244,9 @@ public class Category extends AppCompatActivity {
                 public  void  onClick(View v)
                 {
                     Intent intent = new Intent(getApplicationContext(), Place.class);
-                    intent.putExtra("data", mList.get(POS).get_id());
-                    intent.putExtra("name", 1);
-                    startActivityForResult(intent, mList.get(POS).get_id());
+                    intent.putExtra("data", mList.get(POS).get_placeid());
+                    intent.putExtra("uuid", android_id);
+                    startActivityForResult(intent, mList.get(POS).get_placeid());
 
                 }
             });
