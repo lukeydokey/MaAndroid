@@ -9,8 +9,9 @@ public class Places {
     private int dislike;
     private double recomrate;
     private String address;
+    private String phoneNum;
 
-    Places (String id, String placeid, String placename, String category, String like, String dislike, String recomrate, String address){
+    Places (String id, String placeid, String placename, String category, String like, String dislike, String recomrate, String address, String phoneNum){
         this.id = Integer.parseInt(id);
         this.placeid = Integer.parseInt(placeid);
         this.placename = placename;
@@ -19,6 +20,7 @@ public class Places {
         this.dislike = Integer.parseInt(dislike);
         this.recomrate = Double.parseDouble(recomrate);
         this.address = address;
+        this.phoneNum = phoneNum;
     }
 
     int get_id(){ return id; }
@@ -34,6 +36,9 @@ public class Places {
     double get_recomrate(){ return recomrate; }
     String get_address(){
         return address;
+    }
+    String get_phoneNum(){
+        return phoneNum;
     }
 
 }

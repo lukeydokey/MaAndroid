@@ -38,20 +38,17 @@ public class Place extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place);
 
-        textView4 = findViewById(R.id.textLocation);
-
-        textView = findViewById(R.id.placeName);
-        textView2 = findViewById(R.id.placeCall);
+        textView = findViewById(R.id.categoryName);
+        textView2 = findViewById(R.id.like_count);
         textView3 = findViewById(R.id.recomReason);
+        textView4 = findViewById(R.id.phoneCall);
+
 
         btn = findViewById(R.id.imageButton);
         btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public  void  onClick(View v)
             {
-                //LatLng sangjucu = new LatLng(36.382954, 128.151578);
-                //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:"+sangjucu.latitude+","
-                //        +sangjucu.longitude+"?z=14&q=36.382954, 128.151578(씨유)"));
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?z=12&q="+address));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.addCategory(Intent.CATEGORY_LAUNCHER );
@@ -119,7 +116,8 @@ public class Place extends AppCompatActivity {
             if(mItems.isEmpty() != true) {
                 textView.setText(mItems.get(0).get_placename());
                 textView2.setText("좋아요 : " + mItems.get(0).get_like() + " 싫어요 : " + mItems.get(0).get_dislike());
-                textView3.setText("선호 비율 :" + mItems.get(0).get_recomrate());
+                textView3.setText("선호 비율 :" + mItems.get(0).get_recomrate()+"%");
+                textView4.setText(mItems.get(0).get_phoneNum());
                 address = mItems.get(0).get_address();
             }
         }
@@ -135,7 +133,8 @@ public class Place extends AppCompatActivity {
             mItems.add(new Places(jsonObject.getString("id"),jsonObject.getString("placeid"),
                     jsonObject.getString("placename"),jsonObject.getString("category"),
                     jsonObject.getString("like"),jsonObject.getString("dislike"),
-                    jsonObject.getString("recomrate"),jsonObject.getString("address")));
+                    jsonObject.getString("recomrate"),jsonObject.getString("address"),
+                    jsonObject.getString("phoneNum")));
 
 
         } catch (JSONException e) {

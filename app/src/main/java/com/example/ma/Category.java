@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,8 +32,6 @@ public class Category extends AppCompatActivity {
     public static final int ETC = 104;
 
     TextView textView;
-    Button btn;
-    LinearLayout linear;
     LinkedList<Button> buttons = new LinkedList<Button>();
     ArrayList<Places> mItems = new ArrayList<Places>();
     RecyclerView.Adapter adapter;
@@ -53,11 +50,8 @@ public class Category extends AppCompatActivity {
         setContentView(R.layout.activity_category);
 
         recyclerView = findViewById(R.id.recyclerView);
-        linear = findViewById(R.id.Linear);
-        textView = findViewById(R.id.placeName);
-        btn = findViewById(R.id.button);
+        textView = findViewById(R.id.categoryName);
 
-        //adapter = new RecyclerAdapter(mItems);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -93,7 +87,6 @@ public class Category extends AppCompatActivity {
             {
                 case RES:
                     textView.setText("식당");
-                    btn.setText("식당1");
 
                     url = "http://pudingles1114.iptime.org:23000/places/get_restau_info";
                     networkTask = new NetworkTask(url, null);
@@ -102,12 +95,10 @@ public class Category extends AppCompatActivity {
                     for(int i=0; i< mItems.size(); i++) {
                         buttons.add(new Button(this));
                         buttons.get(i).setText(mItems.get(i).get_placename());
-                        linear.addView(buttons.get(i));
                     }
                     break;
                 case FUN:
-                    textView.setText("꿀잼장소");;
-                    btn.setText("꿀잼장소1");
+                    textView.setText("꿀잼장소");
 
                     url = "http://pudingles1114.iptime.org:23000/places/get_fun_info";
                     networkTask = new NetworkTask(url, null);
@@ -116,12 +107,10 @@ public class Category extends AppCompatActivity {
                     for(int i=0; i< mItems.size(); i++) {
                         buttons.add(new Button(this));
                         buttons.get(i).setText(mItems.get(i).get_placename());
-                        linear.addView(buttons.get(i));
                     }
                     break;
                 case PUB:
-                    textView.setText("술집");;
-                    btn.setText("술집1");
+                    textView.setText("술집");
 
                     url = "http://pudingles1114.iptime.org:23000/places/get_pub_info";
                     networkTask = new NetworkTask(url, null);
@@ -130,12 +119,10 @@ public class Category extends AppCompatActivity {
                     for(int i=0; i< mItems.size(); i++) {
                         buttons.add(new Button(this));
                         buttons.get(i).setText(mItems.get(i).get_placename());
-                        linear.addView(buttons.get(i));
                     }
                     break;
                 case ETC:
-                    textView.setText("기타");;
-                    btn.setText("기타1");
+                    textView.setText("기타");
 
                     url = "http://pudingles1114.iptime.org:23000/places/get_etc_info";
                     networkTask = new NetworkTask(url, null);
@@ -144,7 +131,6 @@ public class Category extends AppCompatActivity {
                     for(int i=0; i< mItems.size(); i++) {
                         buttons.add(new Button(this));
                         buttons.get(i).setText(mItems.get(i).get_placename());
-                        linear.addView(buttons.get(i));
                     }
                     break;
 
@@ -190,7 +176,6 @@ public class Category extends AppCompatActivity {
     }
 
     private void receiveArray(String dataObject){
-        linear.setVisibility(View.GONE);
         mItems.clear();
         try {
             // String 으로 들어온 값 JSONObject 로 1차 파싱
@@ -206,7 +191,8 @@ public class Category extends AppCompatActivity {
                 mItems.add(new Places(dataJsonObject.getString("id"),dataJsonObject.getString("placeid"),
                         dataJsonObject.getString("placename"),dataJsonObject.getString("category"),
                         dataJsonObject.getString("like"),dataJsonObject.getString("dislike"),
-                        dataJsonObject.getString("recomrate"),dataJsonObject.getString("address")));
+                        dataJsonObject.getString("recomrate"),dataJsonObject.getString("address"),
+                        dataJsonObject.getString("phoneNum")));
             }
             // Recycler Adapter 에서 데이터 변경 사항을 체크하라는 함수 호출
             adapter.notifyDataSetChanged();
