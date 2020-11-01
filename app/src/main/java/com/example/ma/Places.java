@@ -1,7 +1,6 @@
 package com.example.ma;
 
 public class Places {
-    private int id;
     private int placeid;
     private String placename;
     private String category;
@@ -11,8 +10,7 @@ public class Places {
     private String address;
     private String phoneNum;
 
-    Places (String id, String placeid, String placename, String category, String like, String dislike, String recomrate, String address, String phoneNum){
-        this.id = Integer.parseInt(id);
+    Places ( String placeid, String placename, String category, String like, String dislike, String recomrate, String address, String phoneNum){
         this.placeid = Integer.parseInt(placeid);
         this.placename = placename;
         this.category = category;
@@ -23,7 +21,6 @@ public class Places {
         this.phoneNum = phoneNum;
     }
 
-    int get_id(){ return id; }
     int get_placeid(){ return placeid; }
     String get_placename(){
         return placename;

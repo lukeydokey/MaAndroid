@@ -191,7 +191,7 @@ public class Place extends AppCompatActivity {
             JSONObject wrapObject = new JSONObject(dataObject);
             JSONObject jsonObject = new JSONObject(wrapObject.getString("places"));
 
-            mItems.add(new Places(jsonObject.getString("id"),jsonObject.getString("placeid"),
+            mItems.add(new Places(jsonObject.getString("placeid"),
                     jsonObject.getString("placename"),jsonObject.getString("category"),
                     jsonObject.getString("like"),jsonObject.getString("dislike"),
                     jsonObject.getString("recomrate"),jsonObject.getString("address"),

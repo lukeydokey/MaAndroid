@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,12 +34,14 @@ public class Category extends AppCompatActivity {
     public static final int ETC = 104;
 
     TextView textView;
+    ToggleButton orderbtn;
     LinkedList<Button> buttons = new LinkedList<Button>();
     ArrayList<Places> mItems = new ArrayList<Places>();
     RecyclerView.Adapter adapter;
     RecyclerView.LayoutManager layoutManager;
     RecyclerView recyclerView;
     String android_id;
+    NetworkTask networkTask;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -51,6 +55,7 @@ public class Category extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         textView = findViewById(R.id.categoryName);
+        orderbtn = findViewById(R.id.orderButton);
 
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -79,7 +84,6 @@ public class Category extends AppCompatActivity {
         if(intent != null){
             Bundle bundle = intent.getExtras();
             String url;
-            NetworkTask networkTask;
             int category = bundle.getInt("data");
             android_id = bundle.getString("uuid");
 
@@ -92,6 +96,7 @@ public class Category extends AppCompatActivity {
                     networkTask = new NetworkTask(url, null);
                     networkTask.execute();
 
+                    btnSetting(url);
                     for(int i=0; i< mItems.size(); i++) {
                         buttons.add(new Button(this));
                         buttons.get(i).setText(mItems.get(i).get_placename());
@@ -104,6 +109,7 @@ public class Category extends AppCompatActivity {
                     networkTask = new NetworkTask(url, null);
                     networkTask.execute();
 
+                    btnSetting(url);
                     for(int i=0; i< mItems.size(); i++) {
                         buttons.add(new Button(this));
                         buttons.get(i).setText(mItems.get(i).get_placename());
@@ -116,6 +122,7 @@ public class Category extends AppCompatActivity {
                     networkTask = new NetworkTask(url, null);
                     networkTask.execute();
 
+                    btnSetting(url);
                     for(int i=0; i< mItems.size(); i++) {
                         buttons.add(new Button(this));
                         buttons.get(i).setText(mItems.get(i).get_placename());
@@ -128,6 +135,7 @@ public class Category extends AppCompatActivity {
                     networkTask = new NetworkTask(url, null);
                     networkTask.execute();
 
+                    btnSetting(url);
                     for(int i=0; i< mItems.size(); i++) {
                         buttons.add(new Button(this));
                         buttons.get(i).setText(mItems.get(i).get_placename());
@@ -137,6 +145,26 @@ public class Category extends AppCompatActivity {
 
             }
         }
+    }
+
+    public void btnSetting (String url){
+        final String infoURL = url;
+
+        orderbtn.setOnCheckedChangeListener(
+                new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                        if(isChecked){
+                            final String orderURL = infoURL + "/recent";
+                            networkTask = new NetworkTask(orderURL, null);
+                            networkTask.execute();
+                        } else {
+                            networkTask = new NetworkTask(infoURL, null);
+                            networkTask.execute();
+                        }
+                    }
+                }
+        );
     }
 
     public class NetworkTask extends AsyncTask<String, Void, String> {
@@ -188,7 +216,7 @@ public class Category extends AppCompatActivity {
                 JSONObject dataJsonObject = jsonArray.getJSONObject(i);
                 // 추출한 Object 에서 필요한 데이터를 표시할 방법을 정해서 화면에 표시
                 // 필자는 RecyclerView 로 데이터를 표시 함
-                mItems.add(new Places(dataJsonObject.getString("id"),dataJsonObject.getString("placeid"),
+                mItems.add(new Places(dataJsonObject.getString("placeid"),
                         dataJsonObject.getString("placename"),dataJsonObject.getString("category"),
                         dataJsonObject.getString("like"),dataJsonObject.getString("dislike"),
                         dataJsonObject.getString("recomrate"),dataJsonObject.getString("address"),
