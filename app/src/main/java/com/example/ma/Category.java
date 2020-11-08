@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
@@ -42,9 +44,49 @@ public class Category extends AppCompatActivity {
     RecyclerView recyclerView;
     String android_id;
     NetworkTask networkTask;
+    ImageButton imgBtn;
+
+    int category;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK){
+            //String name = data.getStringExtra("name");
+            Toast.makeText(getApplicationContext(), "업로드 성공",
+                    Toast.LENGTH_LONG).show();
+            switch (category){
+                case RES:
+                    orderbtn.setChecked(true);
+                    final String RESURL = "http://pudingles1114.iptime.org:23000/places/get_restau_info/recent";
+                    networkTask = new NetworkTask(RESURL, null);
+                    networkTask.execute();
+                    break;
+                case FUN:
+                    orderbtn.setChecked(true);
+                    final String FUNURL = "http://pudingles1114.iptime.org:23000/places/get_fun_info/recent";
+                    networkTask = new NetworkTask(FUNURL, null);
+                    networkTask.execute();
+                    break;
+                case PUB:
+                    orderbtn.setChecked(true);
+                    final String PUBURL = "http://pudingles1114.iptime.org:23000/places/get_pub_info/recent";
+                    networkTask = new NetworkTask(PUBURL, null);
+                    networkTask.execute();
+                    break;
+                case ETC:
+                    orderbtn.setChecked(true);
+                    final String ETCURL = "http://pudingles1114.iptime.org:23000/places/get_etc_info/recent";
+                    networkTask = new NetworkTask(ETCURL, null);
+                    networkTask.execute();
+                    break;
+            }
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "업로드 취소",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -56,7 +98,7 @@ public class Category extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         textView = findViewById(R.id.categoryName);
         orderbtn = findViewById(R.id.orderButton);
-
+        imgBtn = findViewById(R.id.upload_Btn);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -84,7 +126,7 @@ public class Category extends AppCompatActivity {
         if(intent != null){
             Bundle bundle = intent.getExtras();
             String url;
-            int category = bundle.getInt("data");
+            category = bundle.getInt("data");
             android_id = bundle.getString("uuid");
 
             switch (category)
@@ -145,6 +187,12 @@ public class Category extends AppCompatActivity {
 
             }
         }
+    }
+
+    public void uploadBtnClicked(View view){
+        Intent intent = new Intent(getApplicationContext(), Upload.class);
+        intent.putExtra("uuid", android_id);
+        startActivityForResult(intent, 1);
     }
 
     public void btnSetting (String url){
@@ -287,12 +335,5 @@ public class Category extends AppCompatActivity {
             return (null != mList ? mList.size() : 0 );
         }
 
-        public ArrayList<Places> getListData(){
-            return mList;
-        }
-
-        public void setListData(ArrayList<Places> listData){
-            this.mList = listData;
-        }
     }
 }

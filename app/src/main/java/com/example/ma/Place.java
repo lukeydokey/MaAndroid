@@ -19,10 +19,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class Place extends AppCompatActivity {
-    public static final int RES = 101;
-    public static final int FUN = 102;
-    public static final int PUB = 103;
-    public static final int ETC = 104;
 
     int placeid;
     String uuid;

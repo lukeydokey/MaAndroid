@@ -11,16 +11,12 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class RequestHttpURLConnectionPost {
+public class RequestUUIDCreate {
     public String request(String _url, String _params){
 
         // HttpURLConnection 참조 변수.
         HttpURLConnection urlConn = null;
-        // URL 뒤에 붙여서 보낼 파라미터.
 
-        /* *
-         * 2. HttpURLConnection을 통해 web의 데이터를 가져온다.
-         * */
         try{
             URL url = new URL(_url);
             urlConn = (HttpURLConnection) url.openConnection();
