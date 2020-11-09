@@ -256,7 +256,7 @@ public class Place extends AppCompatActivity {
 
         if(keyCode == KeyEvent.KEYCODE_BACK){
             Intent intent = new Intent();
-            setResult(RESULT_OK, intent);
+            setResult(99, intent);
             finish();
 
             return true;

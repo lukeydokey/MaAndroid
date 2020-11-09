@@ -83,7 +83,7 @@ public class Category extends AppCompatActivity {
                     break;
             }
         }
-        else{
+        else if(resultCode == RESULT_CANCELED){
             Toast.makeText(getApplicationContext(), "업로드 취소",
                     Toast.LENGTH_LONG).show();
         }
